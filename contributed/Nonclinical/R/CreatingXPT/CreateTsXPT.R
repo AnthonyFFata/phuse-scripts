@@ -1,39 +1,50 @@
+####################################################################################
+### Functions to Create from ts.xpt files from excel spreadsheet
+####################################################################################
+### See example spreadsheet - it can be expanded with any additional parameters
+### TS File must match example for rows 1 through 3
+### This code has the capabiltiy to output more than 1 TS.xpt file from 1 input file, each different study number will create a different output.  See example input file
 
+## = Instructions
+# = Code discription
+
+## Install both R and optionally a R program like RStudio
+## Install Java that matches the Bit of your computer/R program that you have installed (either 32 or 64 bit)
+## To run this script, copy and paste all of the text into your R program and hit enter after text, or hit run (depends on program) after following specified instructions
 ####################################################################################
-# Functions to Create from ts.xpt files from excel spreadsheet
-# See example spreadsheet - it can be expanded with other parameters and any number of studies
-# Expects to place output in c:/temp/r testing/xpt output - can be changed with mainDir variable
-####################################################################################
-# Setup instructions
-# You need Java on windows path to run, for example
-#   : C:\Program Files\Java\jdk1.8.0_111\jre\bin\server\
-#   If running R-64bit, ensure you are also running Java 64-bit
-####################################################################################
-# XLConnect documentation here:
-# https://cran.r-project.org/web/packages/XLConnect/vignettes/XLConnect.pdf
-# SASxport documentation here:
-# https://cran.r-project.org/web/packages/SASxport/SASxport.pdf
-####################################################################################
-# Improvements to make
+# Improvements that can be made: 
 #    Could use file chooser result directory to use for output location
 ####################################################################################
-# You may need next two lines first time
-# install.packages("XLConnect")
-# install.packages("SASxport")
-####################################################################################
+
+## Install the required packages
+install.packages("XLConnect")
+install.packages("SASxport")
+## You do not need to run the above 2 lines of code again once the packages are installed the first time
+
+## R Script for TS domain starts here (after first run)
 require(XLConnect)
 require(SASxport)
+
+## Open the code "write.xport2.R" on Github and save as a R script (.XPORT2) using your R program nameing it as "write" into desired folder 
+## Rename the file/file path to where you saved the file "write"(ex: C:/Users/Example/Documents/R/write) into the qutoes ("File path/File Name) after the source in red font below
+## Always use the "/" slash for file paths
 # Here is temporary override of write xport function to get desired minimum variable lengths.
 # Use environment for other function in package to allow use of unexported functions in package
-	source("c:/temp/r testing/write.xport2.R")
+	source("File path/File Name")
 	tmpfun <- get("read.xport", envir = asNamespace("SASxport"))
 	environment(write.xport2) <- environment(tmpfun)
 	attributes(write.xport2) <- attributes(tmpfun)
 	assignInNamespace("write.xport", write.xport2, ns="SASxport")
+
+## Set the location of the folder location of your TS.xlsx file 
 # Select file to read
-mainDir <- "c:/temp/r testing/xpt output"
+mainDir <- "File path/File Name"
 # Set output files
 setwd(mainDir)
+
+## Second popup window in R will prompt you to select the TS.xlsx imput file to read
+## Sometimes this does not come up in front of your main R window
+
 myFile <- file.choose()
 # Read in XLSX file
 df <- readWorksheetFromFile(myFile,
@@ -85,3 +96,4 @@ for(aStudy in studyList){
 }  # end of study loop
 setwd(mainDir)
 
+## TS.xpt export files should be in folders with their respective study names in the same folder as your imput
